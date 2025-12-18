@@ -1,0 +1,46 @@
+# 这是这个任务的名字，会显示在 Actions 页面
+name: 每日企业微信推送
+
+# 这里决定了“什么时候”运行
+on:
+  # 1. 允许你手动点按钮触发（方便测试，不用傻等时间）
+  workflow_dispatch:
+  
+  # 2. 定时触发
+  schedule:
+    # 这里的语法是 Cron 表达式：'分 时 日 月 周'
+    # ⚠️ 重要：这里是 UTC 时间 (世界标准时间)
+    # 北京时间 = UTC + 8
+    # 所以如果你想 北京时间 09:00 发，这里要填 1 (9-8=1)
+    # 如果你想 北京时间 18:00 发，这里要填 10 (18-8=10)
+    - cron: '1 0 * * *'
+
+# 这里决定了“做什么”
+jobs:
+  send-message:
+    # 给它分配一台最新的 Ubuntu 虚拟电脑
+    runs-on: ubuntu-latest
+    
+    # 开始执行步骤
+    steps:
+    # 第一步：把你的仓库代码下载到虚拟电脑上
+    - name: 迁出代码
+      uses: actions/checkout@v3
+      
+    # 第二步：给虚拟电脑装上 Python 3.9
+    - name: 设置 Python 环境
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    # 第三步：安装 requests 库 (因为虚拟电脑是全新的，里面啥都没有)
+    - name: 安装依赖
+      run: pip install requests
+        
+    # 第四步：真正运行你的 Python 代码
+    - name: 运行推送脚本
+      env:
+        # 这里最关键！把你在 Settings 里藏好的密码，传给代码
+        # 注意：secrets.WECHAT_WEBHOOK_KEY 必须和你第二步设置的名字一模一样
+        WECHAT_WEBHOOK_KEY: ${{ secrets.WECHAT_WEBHOOK_KEY }}
+      run: python main.py
