@@ -43,4 +43,4 @@ jobs:
         # 这里最关键！把你在 Settings 里藏好的密码，传给代码
         # 注意：secrets.WECHAT_WEBHOOK_KEY 必须和你第二步设置的名字一模一样
         WECHAT_WEBHOOK_KEY: ${{ secrets.WECHAT_WEBHOOK_KEY }}
-      run: python wechatbot.py
+      run: python main.py
