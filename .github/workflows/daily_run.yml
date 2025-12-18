@@ -23,24 +23,23 @@ jobs:
     
     # 开始执行步骤
     steps:
-    # 第一步：把你的仓库代码下载到虚拟电脑上
     - name: 迁出代码
       uses: actions/checkout@v3
       
-    # 第二步：给虚拟电脑装上 Python 3.9
     - name: 设置 Python 环境
       uses: actions/setup-python@v4
       with:
         python-version: '3.9'
         
-    # 第三步：安装 requests 库 (因为虚拟电脑是全新的，里面啥都没有)
     - name: 安装依赖
       run: pip install requests
-        
-    # 第四步：真正运行你的 Python 代码
+
+    # --- 新增的调试步骤 ---
+    - name: 🔍 调试：列出当前所有文件
+      run: ls -R
+    # ---------------------
+
     - name: 运行推送脚本
       env:
-        # 这里最关键！把你在 Settings 里藏好的密码，传给代码
-        # 注意：secrets.WECHAT_WEBHOOK_KEY 必须和你第二步设置的名字一模一样
         WECHAT_WEBHOOK_KEY: ${{ secrets.WECHAT_WEBHOOK_KEY }}
       run: python main.py
